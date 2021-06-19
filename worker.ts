@@ -1,9 +1,12 @@
 import { Client } from "./deps.ts";
 
+const rawPort = Deno.env.get("HTTP_QUEUE_DB_PORT");
+const port = typeof rawPort === "string" ? parseInt(rawPort) : 3306;
+
 const client = await new Client().connect({
   hostname: "localhost",
   username: "http_queue_consumer",
-  port: 3307,
+  port,
   db: "w3xio",
   poolSize: 3,
   password: Deno.env.get("HTTP_QUEUE_DB_PASS"),

@@ -1,1 +1,1 @@
-deno run --allow-net --allow-env=HTTP_QUEUE_DB_PASS --watch index.ts
+deno run --allow-net --allow-env=HTTP_QUEUE_DB_PASS,HTTP_QUEUE_DB_PORT --watch index.ts
