@@ -75,6 +75,8 @@ LIMIT 1;`
       log("no work");
     }
     return;
+  } else {
+    noWorkCounter = 60;
   }
 
   log(result.id, "fetching");
