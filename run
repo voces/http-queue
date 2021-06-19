@@ -1,0 +1,1 @@
+deno run --allow-net --allow-env=HTTP_QUEUE_DB_PASS index.ts
