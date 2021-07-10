@@ -1,4 +1,5 @@
 import { Client } from "./deps.ts";
+import { log } from "./log.ts";
 
 const rawPort = Deno.env.get("HTTP_QUEUE_DB_PORT");
 const port = typeof rawPort === "string" ? parseInt(rawPort) : 3306;
@@ -29,9 +30,6 @@ type RawReq = {
 };
 
 let noWorkCounter = 60;
-
-const log = (...args: unknown[]) =>
-  console.log(new Date().toISOString(), ...args);
 
 export const work = async () => {
   const result = await client.transaction(async (conn) => {
