@@ -31,15 +31,15 @@ export const parsePart = (
   part: string,
   token: string,
   min: number,
-  max: number
+  max: number,
 ): number[] => {
   const nums = new Set<number>();
   const pieces = part.split(",");
   for (const piece of pieces) {
     const match = piece.match(
       new RegExp(
-        `^(?<base>${token})(-(?<range>${token}))?(/(?<step>${token}))?$`
-      )
+        `^(?<base>${token})(-(?<range>${token}))?(/(?<step>${token}))?$`,
+      ),
     );
     // console.log(part, token, min, max);
     if (!match) throw new Error(`Invalid cron part "${part}"`);
@@ -54,8 +54,9 @@ export const parsePart = (
 
     const step = parseInt(match.groups?.step ?? "") || 1;
 
-    for (let i = Math.ceil(base / step) * step; i <= range; i += step)
+    for (let i = Math.ceil(base / step) * step; i <= range; i += step) {
       nums.add(i);
+    }
   }
   return Array.from(nums);
 };
@@ -63,10 +64,9 @@ export const parsePart = (
 export const parseCron = (expr: string): Cron => {
   const parts = expr.split(" ");
   if (parts.length === 5) parts.unshift("0");
-  if (parts.length !== 6)
+  if (parts.length !== 6) {
     throw new Error(`Expected 5-6 parts, received ${parts.length}`);
-
-  //   console.log(parts);
+  }
 
   return {
     second: parsePart(parts[0], ...SECOND_ARGS),
@@ -76,6 +76,40 @@ export const parseCron = (expr: string): Cron => {
     month: parsePart(parts[4], ...MONTH_ARGS),
     dayOfWeek: parsePart(parts[5], ...DAY_OF_WEEK_ARGS),
   };
+};
+
+export const nextCron = (cron: string | Cron, from: Date): Date => {
+  if (typeof cron === "string") cron = parseCron(cron);
+
+  const next = new Date(from);
+
+  {
+    // let seconds = next.getSeconds();
+    let seconds = 59;
+    let nextIndex =
+      cron.second.findIndex((v, i, arr) =>
+        v <= seconds && (i === arr.length - 1 || arr[i + 1] > seconds)
+      ) + 1;
+    console.log({ seconds, nextIndex, second: cron.second });
+  }
+
+  //   {
+  //     let month = next.getMonth() + 1;
+
+  //     if (!cron.month.includes(month)) {
+  //       let index = 0;
+  //       while (cron.month.length - 1 < index && cron.month[index + 1] < month) {
+  //         index++;
+  //       }
+  //       console.log(index);
+
+  //       // if (index )
+  //     }
+
+  //     console.log(month);
+  //   }
+
+  return next;
 };
 
 export const elapsed = (now: Date, last: Date, cron: Cron): boolean => false;

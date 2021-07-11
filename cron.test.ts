@@ -4,6 +4,7 @@ import {
   HOUR_ARGS,
   MINUTE_ARGS,
   MONTH_ARGS,
+  nextCron,
   parseCron,
   parsePart,
   SECOND_ARGS,
@@ -94,7 +95,7 @@ Deno.test("parse every second", () => {
 Deno.test("parse every midnight", () => {
   assertEquals(
     { ...every, second: [0], minute: [0], hour: [0] },
-    parseCron("0 0 * * *")
+    parseCron("0 0 * * *"),
   );
 });
 
@@ -110,7 +111,11 @@ Deno.test(
         day: [1],
         month: [1],
       },
-      parseCron("0 0-10/5,14,15,18-23/3 1 1 *")
+      parseCron("0 0-10/5,14,15,18-23/3 1 1 *"),
     );
-  }
+  },
 );
+
+Deno.test("nextCron", () => {
+  assertEquals("", nextCron("* * * * * * *", new Date()));
+});
